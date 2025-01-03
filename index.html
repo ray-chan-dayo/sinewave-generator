@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>モールス信号風 音アプリ</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background: #f0f0f0;
+    }
+    button {
+      font-size: 2rem; /* ボタンの文字サイズを大きく */
+      width: 80%; /* ボタンの幅を画面の80%に設定 */
+      height: 80%; /* ボタンの高さを画面の20%に設定 */
+      border: none;
+      border-radius: 10px; /* 柔らかいデザイン */
+      background-color: #007bff;
+      color: white;
+      cursor: pointer;
+    }
+    button:active {
+      background-color: #0056b3; /* 押下時の色 */
+    }
+  </style>
+</head>
+<body>
+  <button id="play-sound">押して音を鳴らす</button>
+
+  <script>
+    let audioContext;
+    let oscillator;
+
+    const startSound = () => {
+      if (!audioContext) {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      oscillator = audioContext.createOscillator();
+      oscillator.type = 'sine';
+      oscillator.frequency.setValueAtTime(440, audioContext.currentTime);
+      oscillator.connect(audioContext.destination);
+      oscillator.start();
+    };
+
+    const stopSound = () => {
+      if (oscillator) {
+        oscillator.stop();
+        oscillator.disconnect();
+        oscillator = null;
+      }
+    };
+
+    const button = document.getElementById('play-sound');
+
+    button.addEventListener('mousedown', startSound);
+    button.addEventListener('mouseup', stopSound);
+    button.addEventListener('mouseleave', stopSound);
+    button.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      startSound();
+    });
+    button.addEventListener('touchend', stopSound);
+  </script>
+</body>
+</html>
